@@ -1,0 +1,9 @@
+---
+- name: Teardown vpc
+  ec2_vpc_net:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    cidr_block: "{{vpc_cidr}}"
+    name: "{{vpc_name}}"
+    region: "{{vpc_region}}"
+    state: absent
