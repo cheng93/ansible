@@ -1,5 +1,5 @@
 ---
-- name: Create vpc
+- name: Create {{group_name}} vpc
   ec2_vpc_net:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
@@ -8,4 +8,16 @@
     region: "{{vpc_region}}"
     state: present
     tags:
-      group: "{{vpc_group}}"
+      group: "{{group_name}}"
+  register: vpc
+
+- name: Create {{group_name}} igw
+  ec2_vpc_igw:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{vpc_region}}"
+    state: present
+    #tags:
+    #  Name: "{{group_name}}-igw"
+    #  group: "{{group_name}}"
+    vpc_id: "{{vpc.vpc.id}}"
