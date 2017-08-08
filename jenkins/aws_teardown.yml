@@ -1,5 +1,5 @@
 ---
-- name: teardown the aws stack for inventory
+- name: teardown the jenkins stack
   hosts: all
   connection: local
   roles:
