@@ -3,6 +3,5 @@ group_name: jenkins
 
 # VPC
 vpc_cidr: 10.0.0.0/24
-vpc_group: "{{group_name}}"
 vpc_name: "{{group_name}}-vpc"
 vpc_region: eu-west-2
