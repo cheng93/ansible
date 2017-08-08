@@ -26,6 +26,7 @@
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0
 
 - name: Teardown {{group_name}} public subnet
   ec2_vpc_subnet:
@@ -35,6 +36,7 @@
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0
 
 - name: Teardown {{group_name}} private subnet
   ec2_vpc_subnet:
@@ -44,6 +46,7 @@
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0
 
 - name: Teardown {{group_name}} vpc
   ec2_vpc_net:
@@ -53,3 +56,4 @@
     name: "{{vpc_name}}"
     region: "{{region}}"
     state: absent
+  when: vpc.vpcs|length > 0
