@@ -5,22 +5,40 @@
     aws_secret_key: "{{aws_secret_key}}"
     filters:
       "tag:Name": "{{vpc_name}}"
-    region: "{{vpc_region}}"
+    region: "{{region}}"
   register: vpc 
 
 - name: Teardown {{group_name}} igw
   ec2_vpc_igw:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
-    region: "{{vpc_region}}"
+    region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
-  
+
+- name: Teardown {{group_name}} public subnet
+  ec2_vpc_subnet:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    cidr: "{{subnet_public_cidr}}"
+    region: "{{region}}"
+    state: absent
+    vpc_id: "{{vpc.vpcs[0].id}}"
+
+- name: Teardown {{group_name}} private subnet
+  ec2_vpc_subnet:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    cidr: "{{subnet_private_cidr}}"
+    region: "{{region}}"
+    state: absent
+    vpc_id: "{{vpc.vpcs[0].id}}"
+
 - name: Teardown {{group_name}} vpc
   ec2_vpc_net:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
     cidr_block: "{{vpc_cidr}}"
     name: "{{vpc_name}}"
-    region: "{{vpc_region}}"
+    region: "{{region}}"
     state: absent

@@ -4,8 +4,14 @@ aws_access_key: "{{vault_aws_access_key}}"
 aws_secret_key: "{{vault_aws_secret_key}}"
 
 group_name: jenkins
+region: eu-west-2
 
 # VPC
-vpc_cidr: 10.0.0.0/24
+vpc_cidr: 10.0.0.0/16
 vpc_name: "{{group_name}}-vpc"
-vpc_region: eu-west-2
+
+# Subnet
+subnet_private_cidr: 10.0.0.0/24
+subnet_private_name: "{{group_name}}-priv-subnet"
+subnet_public_cidr: 10.0.1.0/24
+subnet_public_name: "{{group_name}}-pub-subnet"
