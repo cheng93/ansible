@@ -1,0 +1,6 @@
+---
+- name: teardown the aws stack for inventory
+  hosts: all
+  connection: local
+  roles:
+    - vpc_teardown
