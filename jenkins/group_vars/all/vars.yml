@@ -15,3 +15,7 @@ subnet_private_cidr: 10.0.0.0/24
 subnet_private_name: "{{group_name}}-priv-subnet"
 subnet_public_cidr: 10.0.1.0/24
 subnet_public_name: "{{group_name}}-pub-subnet"
+
+# Route table
+route_table_public_dest: 0.0.0.0/0
+route_table_public_name: "{{group_name}}-pub-route-table"

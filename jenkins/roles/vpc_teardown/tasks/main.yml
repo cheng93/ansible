@@ -8,6 +8,17 @@
     region: "{{region}}"
   register: vpc 
 
+- name: Teardown {{group_name}} route tables
+  ec2_vpc_route_table:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{region}}"
+    state: absent
+    tags:
+      Name: "{{route_table_public_name}}"
+    vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0
+
 - name: Teardown {{group_name}} igw
   ec2_vpc_igw:
     aws_access_key: "{{aws_access_key}}"

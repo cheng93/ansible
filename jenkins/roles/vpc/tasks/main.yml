@@ -34,6 +34,7 @@
       Name: "{{subnet_public_name}}"
       group: "{{group_name}}"
     vpc_id: "{{vpc.vpc.id}}"
+  register: public_subnet
 
 - name: Create {{group_name}} igw
   ec2_vpc_igw:
@@ -44,4 +45,21 @@
     #tags:
     #  Name: "{{group_name}}-igw"
     #  group: "{{group_name}}"
+    vpc_id: "{{vpc.vpc.id}}"
+  register: igw
+
+- name: Create {{group_name}} public route table
+  ec2_vpc_route_table:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{region}}"
+    routes:
+      - dest: "{{route_table_public_dest}}"
+        gateway_id: "{{igw.gateway_id}}"
+    state: present
+    subnets:
+      - "{{public_subnet.subnet.id}}"
+    tags:
+      Name: "{{route_table_public_name}}"
+      group: "{{group_name}}"
     vpc_id: "{{vpc.vpc.id}}"
