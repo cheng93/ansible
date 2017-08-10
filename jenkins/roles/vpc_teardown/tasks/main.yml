@@ -8,7 +8,7 @@
     region: "{{region}}"
   register: vpc 
 
-- name: Teardown {{group_name}} route tables
+- name: Teardown {{group_name}} public route tables
   ec2_vpc_route_table:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
@@ -19,14 +19,53 @@
     vpc_id: "{{vpc.vpcs[0].id}}"
   when: vpc.vpcs|length > 0
 
-- name: Teardown {{group_name}} igw
-  ec2_vpc_igw:
+- name: Teardown {{group_name}} private route tables
+  ec2_vpc_route_table:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
     region: "{{region}}"
     state: absent
+    tags:
+      Name: "{{route_table_private_name}}"
     vpc_id: "{{vpc.vpcs[0].id}}"
   when: vpc.vpcs|length > 0
+
+- name: Get nat gateway info
+  ec2_vpc_nat_gateway_facts:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    filters:
+      vpc-id: "{{vpc.vpcs[0].id}}"
+  register: nat_gateways
+  when: vpc.vpcs|length > 0
+
+- name: Teardown nat gateway
+  ec2_vpc_nat_gateway:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    nat_gateway_id: "{{item.nat_gateway_id}}"
+    region: "{{region}}"
+    state: absent
+    wait: yes
+  when: nat_gateways.result|length > 0
+  with_items: 
+    - "{{nat_gateways.result}}"
+  when: item.state == 'available' or item.state == 'pending'
+
+- name: Delete elastic ips
+  ec2_eip:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    device_id: "{{item.1.network_interface_id}}"
+    in_vpc: true
+    region: "{{region}}"
+    release_on_disassociation: true
+    state: absent
+  when: nat_gateways.result|length > 0
+  with_subelements:
+    - "{{nat_gateways.result}}"
+    - nat_gateway_addresses
+  when: item.0.state == 'available' or item.0.state == 'pending'
 
 - name: Teardown {{group_name}} public subnet
   ec2_vpc_subnet:
@@ -43,6 +82,15 @@
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
     cidr: "{{subnet_private_cidr}}"
+    region: "{{region}}"
+    state: absent
+    vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0
+
+- name: Teardown {{group_name}} igw
+  ec2_vpc_igw:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"

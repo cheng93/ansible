@@ -22,6 +22,7 @@
       Name: "{{subnet_private_name}}"
       group: "{{group_name}}"
     vpc_id: "{{vpc.vpc.id}}"
+  register: private_subnet
 
 - name: Create {{group_name}} public subnet
   ec2_vpc_subnet:
@@ -36,6 +37,18 @@
     vpc_id: "{{vpc.vpc.id}}"
   register: public_subnet
 
+- name: Create nat gateway
+  ec2_vpc_nat_gateway:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    if_exist_do_not_create: true
+    region: "{{region}}"
+    state: present
+    subnet_id: "{{private_subnet.subnet.id}}"
+    wait: yes
+    wait_timeout: 600
+  register: nat_gateway
+
 - name: Create {{group_name}} igw
   ec2_vpc_igw:
     aws_access_key: "{{aws_access_key}}"
@@ -47,6 +60,23 @@
     #  group: "{{group_name}}"
     vpc_id: "{{vpc.vpc.id}}"
   register: igw
+
+- name: Create {{group_name}} private route table
+  ec2_vpc_route_table:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{region}}"
+    routes:
+      - dest: "{{route_table_private_dest}}"
+      # https://github.com/ansible/ansible/pull/27637 should be fixed in 2.4
+        gateway_id: "{{nat_gateway.NatGatewayId}}"
+    state: present
+    subnets:
+      - "{{private_subnet.subnet.id}}"
+    tags:
+      Name: "{{route_table_private_name}}"
+      group: "{{group_name}}"
+    vpc_id: "{{vpc.vpc.id}}"
 
 - name: Create {{group_name}} public route table
   ec2_vpc_route_table:
