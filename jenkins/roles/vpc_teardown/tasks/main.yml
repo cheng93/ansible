@@ -44,28 +44,15 @@
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
     nat_gateway_id: "{{item.nat_gateway_id}}"
+    release_eip: yes
     region: "{{region}}"
     state: absent
     wait: yes
-  when: nat_gateways.result|length > 0
   with_items: 
     - "{{nat_gateways.result}}"
-  when: item.state == 'available' or item.state == 'pending'
-
-- name: Delete elastic ips
-  ec2_eip:
-    aws_access_key: "{{aws_access_key}}"
-    aws_secret_key: "{{aws_secret_key}}"
-    device_id: "{{item.1.network_interface_id}}"
-    in_vpc: true
-    region: "{{region}}"
-    release_on_disassociation: true
-    state: absent
-  when: nat_gateways.result|length > 0
-  with_subelements:
-    - "{{nat_gateways.result}}"
-    - nat_gateway_addresses
-  when: item.0.state == 'available' or item.0.state == 'pending'
+  when: 
+    - nat_gateways.result|default([])|length > 0
+    - item.state == 'available' or item.state == 'pending'
 
 - name: Teardown {{group_name}} public subnet
   ec2_vpc_subnet:
