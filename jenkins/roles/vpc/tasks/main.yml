@@ -45,8 +45,8 @@
     region: "{{region}}"
     state: present
     subnet_id: "{{private_subnet.subnet.id}}"
-    wait: yes
-    wait_timeout: 600
+    #wait: yes
+    #wait_timeout: 600
   register: nat_gateway
 
 - name: Create {{group_name}} igw
