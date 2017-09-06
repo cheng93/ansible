@@ -21,3 +21,10 @@ route_table_private_dest: 0.0.0.0/0
 route_table_private_name: "{{group_name}}-priv-route-table"
 route_table_public_dest: 0.0.0.0/0
 route_table_public_name: "{{group_name}}-pub-route-table"
+
+# Security groups
+bastion_sg_name: "{{group_name}}-bastion-sg"
+ec2_sg_name: "{{group_name}}-ec2-sg"
+elb_sg_name: "{{group_name}}-elb-sg"
+elb_sg_cidr: 0.0.0.0/0
+

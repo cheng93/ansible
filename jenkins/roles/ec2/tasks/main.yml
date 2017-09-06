@@ -1,0 +1,102 @@
+---
+- name: Get {{group_name}} vpc info
+  ec2_vpc_net_facts:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    filters:
+      "tag:Name": "{{vpc_name}}"
+    region: "{{region}}"
+  register: vpc 
+
+- name: get public IP
+  ipify_facts:
+  register: public_ip
+
+- name: Create {{group_name}} bastion security group
+  ec2_group:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    description: "{{bastion_sg_name}}" 
+    name: "{{bastion_sg_name}}"
+    region: "{{region}}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: "{{public_ip.ansible_facts.ipify_public_ip}}/32"
+    state: present
+    vpc_id: "{{vpc.vpcs[0].id}}"
+  register: bastion_sg
+
+- name: Tag {{group_name}} bastion security group
+  ec2_tag:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{region}}"
+    resource: "{{bastion_sg.group_id}}"
+    tags:
+      Name: "{{bastion_sg_name}}"
+      group: "{{group_name}}"
+    state: present
+
+- name: Create {{group_name}} elb security group
+  ec2_group:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    description: "{{elb_sg_name}}" 
+    name: "{{elb_sg_name}}"
+    region: "{{region}}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: "{{elb_sg_cidr}}"
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: "{{elb_sg_cidr}}"
+    state: present
+    vpc_id: "{{vpc.vpcs[0].id}}"
+  register: elb_sg
+
+- name: Tag {{group_name}} elb security group
+  ec2_tag:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{region}}"
+    resource: "{{elb_sg.group_id}}"
+    tags:
+      Name: "{{elb_sg_name}}"
+      group: "{{group_name}}"
+    state: present
+
+- name: Create {{group_name}} ec2 security group
+  ec2_group:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    description: "{{ec2_sg_name}}" 
+    name: "{{ec2_sg_name}}"
+    region: "{{region}}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        group_id: "{{bastion_sg.group_id}}"
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        group_id: "{{elb_sg.group_id}}"
+    state: present
+    vpc_id: "{{vpc.vpcs[0].id}}"
+  register: ec2_sg
+
+- name: Tag {{group_name}} ec2 security group
+  ec2_tag:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{region}}"
+    resource: "{{ec2_sg.group_id}}"
+    tags:
+      Name: "{{ec2_sg_name}}"
+      group: "{{group_name}}"
+    state: present
