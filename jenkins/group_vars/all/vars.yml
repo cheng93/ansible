@@ -23,8 +23,8 @@ route_table_public_dest: 0.0.0.0/0
 route_table_public_name: "{{group_name}}-pub-route-table"
 
 # Security groups
-bastion_sg_name: "{{group_name}}-bastion-sg"
-ec2_sg_name: "{{group_name}}-ec2-sg"
-elb_sg_name: "{{group_name}}-elb-sg"
-elb_sg_cidr: 0.0.0.0/0
+sg_bastion_name: "{{group_name}}-bastion-sg"
+sg_ec2_name: "{{group_name}}-ec2-sg"
+sg_elb_name: "{{group_name}}-elb-sg"
+sg_elb_cidr: 0.0.0.0/0
 

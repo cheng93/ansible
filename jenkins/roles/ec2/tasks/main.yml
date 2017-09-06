@@ -16,8 +16,8 @@
   ec2_group:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
-    description: "{{bastion_sg_name}}" 
-    name: "{{bastion_sg_name}}"
+    description: "{{sg_bastion_name}}" 
+    name: "{{sg_bastion_name}}"
     region: "{{region}}"
     rules:
       - proto: tcp
@@ -35,7 +35,7 @@
     region: "{{region}}"
     resource: "{{bastion_sg.group_id}}"
     tags:
-      Name: "{{bastion_sg_name}}"
+      Name: "{{sg_bastion_name}}"
       group: "{{group_name}}"
     state: present
 
@@ -43,18 +43,18 @@
   ec2_group:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
-    description: "{{elb_sg_name}}" 
-    name: "{{elb_sg_name}}"
+    description: "{{sg_elb_name}}" 
+    name: "{{sg_elb_name}}"
     region: "{{region}}"
     rules:
       - proto: tcp
         from_port: 80
         to_port: 80
-        cidr_ip: "{{elb_sg_cidr}}"
+        cidr_ip: "{{sg_elb_cidr}}"
       - proto: tcp
         from_port: 443
         to_port: 443
-        cidr_ip: "{{elb_sg_cidr}}"
+        cidr_ip: "{{sg_elb_cidr}}"
     state: present
     vpc_id: "{{vpc.vpcs[0].id}}"
   register: elb_sg
@@ -66,7 +66,7 @@
     region: "{{region}}"
     resource: "{{elb_sg.group_id}}"
     tags:
-      Name: "{{elb_sg_name}}"
+      Name: "{{sg_elb_name}}"
       group: "{{group_name}}"
     state: present
 
@@ -74,8 +74,8 @@
   ec2_group:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
-    description: "{{ec2_sg_name}}" 
-    name: "{{ec2_sg_name}}"
+    description: "{{sg_ec2_name}}" 
+    name: "{{sg_ec2_name}}"
     region: "{{region}}"
     rules:
       - proto: tcp
@@ -97,6 +97,6 @@
     region: "{{region}}"
     resource: "{{ec2_sg.group_id}}"
     tags:
-      Name: "{{ec2_sg_name}}"
+      Name: "{{sg_ec2_name}}"
       group: "{{group_name}}"
     state: present

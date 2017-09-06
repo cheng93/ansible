@@ -12,7 +12,7 @@
   ec2_group:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
-    name: "{{ec2_sg_name}}"
+    name: "{{sg_ec2_name}}"
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
@@ -21,7 +21,7 @@
   ec2_group:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
-    name: "{{elb_sg_name}}"
+    name: "{{sg_elb_name}}"
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
@@ -30,7 +30,7 @@
   ec2_group:
     aws_access_key: "{{aws_access_key}}"
     aws_secret_key: "{{aws_secret_key}}"
-    name: "{{bastion_sg_name}}"
+    name: "{{sg_bastion_name}}"
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
