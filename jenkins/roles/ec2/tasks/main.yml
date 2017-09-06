@@ -100,3 +100,30 @@
       Name: "{{sg_ec2_name}}"
       group: "{{group_name}}"
     state: present
+
+- name: Get {{group_name}} public subnet
+  ec2_vpc_subnet_facts:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    filters:
+      vpc-id: "{{vpc.vpcs[0].id}}"
+      "tag:Name": "{{subnet_public_name}}"
+    region: "{{region}}"
+  register: public_subnet
+
+- name: Create {{group_name}} bastion ec2 instance
+  ec2:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    assign_public_ip: yes
+    count_tag: "Name"
+    exact_count: 1
+    group_id: "{{bastion_sg.group_id}}"
+    image: "{{ec2_bastion_image}}"
+    instance_tags:
+      Name: "{{ec2_bastion_name}}"
+      group: "{{group_name}}"
+    instance_type: "{{ec2_bastion_type}}"
+    key_name: "{{ec2_bastion_key}}"
+    region: "{{region}}"
+    vpc_subnet_id: "{{public_subnet.subnets[0].id}}"

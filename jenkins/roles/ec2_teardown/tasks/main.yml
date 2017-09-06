@@ -8,6 +8,28 @@
     region: "{{region}}"
   register: vpc
 
+- name: Get {{group_name}} bastion ec2 instance info
+  ec2_remote_facts:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{region}}"
+    filters:
+      vpc-id: "{{vpc.vpcs[0].id}}"
+      "tag:Name": "{{ec2_bastion_name}}"
+  register: bastion_ec2
+  when: vpc.vpcs|length > 0
+
+- name: Terminate {{group_name}} bastion ec2 instance
+  ec2:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    instance_ids: "{{item.id}}"
+    region: "{{region}}"
+    state: absent
+    wait: yes
+  when: vpc.vpcs|length > 0
+  with_items: "{{bastion_ec2.instances}}"
+
 - name: Teardown {{group_name}} ec2 security group
   ec2_group:
     aws_access_key: "{{aws_access_key}}"
@@ -16,6 +38,7 @@
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0
 
 - name: Teardown {{group_name}} elb security group
   ec2_group:
@@ -25,6 +48,7 @@
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0
 
 - name: Teardown {{group_name}} bastion security group
   ec2_group:
@@ -34,3 +58,4 @@
     region: "{{region}}"
     state: absent
     vpc_id: "{{vpc.vpcs[0].id}}"
+  when: vpc.vpcs|length > 0

@@ -28,3 +28,12 @@ sg_ec2_name: "{{group_name}}-ec2-sg"
 sg_elb_name: "{{group_name}}-elb-sg"
 sg_elb_cidr: 0.0.0.0/0
 
+# EC2
+ec2_bastion_image: "ami-489f8e2c"
+ec2_bastion_key: "jump"
+ec2_bastion_name: "{{group_name}}-bastion-ec2"
+ec2_bastion_type: "t2.micro"
+ec2_jenkins_image: "ami-489f8e2c"
+ec2_jenkins_key: "jenkins"
+ec2_jenkins_name: "{{group_name}}-jenkins-ec2"
+ec2_jenkins_type: "t2.micro"
