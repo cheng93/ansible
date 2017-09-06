@@ -3,4 +3,7 @@
   hosts: all
   connection: local
   roles:
-    - vpc_teardown
+    - role: vpc_teardown
+      tags: vpc
+    - role: ec2_teardown
+      tags: ec2
