@@ -44,7 +44,7 @@
     if_exist_do_not_create: true
     region: "{{region}}"
     state: present
-    subnet_id: "{{private_subnet.subnet.id}}"
+    subnet_id: "{{public_subnet.subnet.id}}"
     #wait: yes
     #wait_timeout: 600
   register: nat_gateway
