@@ -55,9 +55,9 @@
     aws_secret_key: "{{aws_secret_key}}"
     region: "{{region}}"
     state: present
-    #tags:
-    #  Name: "{{group_name}}-igw"
-    #  group: "{{group_name}}"
+    tags:
+     Name: "{{group_name}}-igw"
+     group: "{{group_name}}"
     vpc_id: "{{vpc.vpc.id}}"
   register: igw
 
@@ -68,8 +68,7 @@
     region: "{{region}}"
     routes:
       - dest: "{{route_table_private_dest}}"
-      # https://github.com/ansible/ansible/pull/27916 should be fixed in 2.4
-        gateway_id: "{{nat_gateway.nat_gateway_id|default(nat_gateway.NatGatewayId)}}"
+        gateway_id: "{{nat_gateway.nat_gateway_id}}"
     state: present
     subnets:
       - "{{private_subnet.subnet.id}}"
