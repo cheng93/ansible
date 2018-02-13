@@ -1,4 +1,13 @@
 ---
+  - name: Getting {{resource_group_name}} resource group facts
+    azure_rm_resourcegroup_facts:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      name: "{{resource_group_name}}"
+    register: resource_group
+
   - name: Destroy {{virtual_network_name}} virtual network
     azure_rm_virtualnetwork:
       client_id: "{{azure_client_id}}"
@@ -8,3 +17,4 @@
       resource_group: "{{resource_group_name}}"
       name: "{{virtual_network_name}}"
       state: absent
+    when: resource_group.ansible_facts.azure_resourcegroups|length > 0
