@@ -7,3 +7,5 @@
     roles:
       - role: resource_group
         tags: resource_group
+      - role: network
+        tags: network

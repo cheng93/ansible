@@ -1,0 +1,10 @@
+- name: Create {{virtual_network_name}} virtual network
+  azure_rm_virtualnetwork:
+    client_id: "{{azure_client_id}}"
+    secret: "{{azure_secret}}"
+    tenant: "{{azure_tenant}}"
+    subscription_id: "{{azure_subscription}}"
+    resource_group: "{{resource_group_name}}"
+    name: "{{virtual_network_name}}"
+    address_prefixes_cidr: "{{virtual_network_cidr}}"
+    state: present
