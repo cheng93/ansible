@@ -1,0 +1,10 @@
+---
+- name: Destroy {{resource_group_name}} resource group
+  azure_rm_resourcegroup:
+    client_id: "{{azure_client_id}}"
+    secret: "{{azure_secret}}"
+    tenant: "{{azure_tenant}}"
+    subscription_id: "{{azure_subscription}}"
+    name: "{{resource_group_name}}"
+    state: absent
+  
