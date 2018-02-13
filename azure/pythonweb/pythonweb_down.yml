@@ -2,6 +2,8 @@
   - name: teardown PytonWeb infrastructure on Azure
     hosts: all
     connection: local
+    vars:
+      teardown: true
     roles:
-      - role: resource_group_down
+      - role: resource_group
         tags: resource_group

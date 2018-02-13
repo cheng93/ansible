@@ -2,6 +2,8 @@
   - name: create PythonWeb infrastructure in Azure
     hosts: all
     connection: local
+    vars:
+      teardown: false
     roles:
       - role: resource_group
         tags: resource_group
