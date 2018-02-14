@@ -20,38 +20,9 @@
       register: virtual_network
 
     - block:
-      - name: Destroy {{subnet_private_name}} subnet
-        azure_rm_subnet:
-          client_id: "{{azure_client_id}}"
-          secret: "{{azure_secret}}"
-          tenant: "{{azure_tenant}}"
-          subscription_id: "{{azure_subscription}}"
-          resource_group: "{{resource_group_name}}"
-          virtual_network_name: "{{virtual_network_name}}"
-          name: "{{subnet_private_name}}"
-          state: absent
-
-      - name: Destroy {{subnet_public_name}} subnet
-        azure_rm_subnet:
-          client_id: "{{azure_client_id}}"
-          secret: "{{azure_secret}}"
-          tenant: "{{azure_tenant}}"
-          subscription_id: "{{azure_subscription}}"
-          resource_group: "{{resource_group_name}}"
-          virtual_network_name: "{{virtual_network_name}}"
-          name: "{{subnet_public_name}}"
-          state: absent
+      - include_tasks: down_public.yml
+      - include_tasks: down_private.yml
       when: virtual_network.ansible_facts.azure_virtualnetworks|length > 0
-
-    - name: Destroy {{nsg_private_name}} network server group
-      azure_rm_securitygroup:
-        client_id: "{{azure_client_id}}"
-        secret: "{{azure_secret}}"
-        tenant: "{{azure_tenant}}"
-        subscription_id: "{{azure_subscription}}"
-        resource_group: "{{resource_group_name}}"
-        name: "{{nsg_private_name}}"
-        state: absent
 
     - name: Destroy {{virtual_network_name}} virtual network
       azure_rm_virtualnetwork:

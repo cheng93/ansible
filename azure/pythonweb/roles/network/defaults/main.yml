@@ -7,8 +7,23 @@ nsg_private_location: "{{location}}"
 nsg_private_rule_ssh_name: "Allow-SSH"
 nsg_private_rule_psql_name: "Allow-Postgres"
 
+nsg_public_name: "NSG-Public-{{resource_group_name}}"
+nsg_public_location: "{{location}}"
+nsg_public_rule_ssh_name: "Allow-SSH"
+nsg_public_rule_http_name: "Allow-Http"
+
 subnet_public_name: "Subnet-Public-{{resource_group_name}}"
 subnet_public_cidr: "10.0.0.0/24"
 
 subnet_private_name: "Subnet-Private-{{resource_group_name}}"
 subnet_private_cidr: "10.0.1.0/24"
+
+nic_web_name: "NIC-Web-{{resource_group_name}}"
+nic_web_location: "{{location}}"
+
+nic_db_name: "NIC-Db-{{resource_group_name}}"
+nic_db_location: "{{location}}"
+
+ip_name: "Ip-{{resource_group_name}}"
+ip_location: "{{location}}"
+ip_domain: "{{resource_group_name|lower}}"

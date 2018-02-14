@@ -1,0 +1,64 @@
+---
+  - name: Create {{subnet_public_name}} subnet
+    azure_rm_subnet:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      virtual_network_name: "{{virtual_network_name}}"
+      name: "{{subnet_public_name}}"
+      address_prefix_cidr: "{{subnet_public_cidr}}"
+      state: present
+
+  - name: Create {{nsg_public_name}} network server group
+    azure_rm_securitygroup:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      name: "{{nsg_public_name}}"
+      location: "{{nsg_public_location}}"
+      rules:
+        - name: "{{nsg_public_rule_ssh_name}}"
+          direction: "Inbound"
+          destination_port_range: 22
+          protocol: "Tcp"
+          access: "Allow"
+          priority: "100"
+        - name: "{{nsg_public_rule_http_name}}"
+          direction: "Inbound"
+          destination_port_range: 80
+          protocol: "Tcp"
+          access: "Allow"
+          priority: "200"
+      state: present
+  
+  - name: Create {{ip_name}} public ip
+    azure_rm_publicipaddress:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      name: "{{ip_name}}"
+      allocation_method: "Static"
+      domain_name_label: "{{ip_domain}}"
+      location: "{{ip_location}}"
+      state: present
+
+  - name: Create {{nic_web_name}} network interface
+    azure_rm_networkinterface:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      virtual_network_name: "{{virtual_network_name}}"
+      subnet_name: "{{subnet_public_name}}"
+      name: "{{nic_web_name}}"
+      location: "{{nic_web_location}}"
+      public_ip_address_name: "{{ip_name}}"
+      security_group_name: "{{nsg_public_name}}"
+      state: present
