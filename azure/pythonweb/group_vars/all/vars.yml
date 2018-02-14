@@ -8,3 +8,4 @@ azure_subscription: "{{vault_azure_subscription}}"
 vm_username: "{{vault_vm_username}}"
 
 resource_group_name: "PythonWeb"
+location: "westeurope"
