@@ -6,6 +6,4 @@
       teardown: true
     roles:
       - role: network
-        tags: network
       - role: resource_group
-        tags: resource_group

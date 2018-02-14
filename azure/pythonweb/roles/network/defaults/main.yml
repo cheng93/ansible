@@ -1,3 +1,14 @@
 ---
 virtual_network_name: "VNet-{{resource_group_name}}"
 virtual_network_cidr: "10.0.0.0/16"
+
+nsg_private_name: "NSG-Private-{{resource_group_name}}"
+nsg_private_location: "{{location}}"
+nsg_private_rule_ssh_name: "Allow-SSH"
+nsg_private_rule_psql_name: "Allow-Postgres"
+
+subnet_public_name: "Subnet-Public-{{resource_group_name}}"
+subnet_public_cidr: "10.0.0.0/24"
+
+subnet_private_name: "Subnet-Private-{{resource_group_name}}"
+subnet_private_cidr: "10.0.1.0/24"

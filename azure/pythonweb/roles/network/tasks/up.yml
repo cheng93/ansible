@@ -1,10 +1,63 @@
-- name: Create {{virtual_network_name}} virtual network
-  azure_rm_virtualnetwork:
-    client_id: "{{azure_client_id}}"
-    secret: "{{azure_secret}}"
-    tenant: "{{azure_tenant}}"
-    subscription_id: "{{azure_subscription}}"
-    resource_group: "{{resource_group_name}}"
-    name: "{{virtual_network_name}}"
-    address_prefixes_cidr: "{{virtual_network_cidr}}"
-    state: present
+---
+  - name: Create {{virtual_network_name}} virtual network
+    azure_rm_virtualnetwork:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      name: "{{virtual_network_name}}"
+      address_prefixes_cidr: "{{virtual_network_cidr}}"
+      state: present
+
+  - name: Create {{nsg_private_name}} network server group
+    azure_rm_securitygroup:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      name: "{{nsg_private_name}}"
+      location: "{{nsg_private_location}}"
+      rules:
+        - name: "{{nsg_private_rule_ssh_name}}"
+          direction: "Inbound"
+          source_address_prefix: "{{subnet_public_cidr}}"
+          destination_port_range: 22
+          protocol: "Tcp"
+          access: "Allow"
+          priority: "100"
+        - name: "{{nsg_private_rule_psql_name}}"
+          direction: "Inbound"
+          source_address_prefix: "{{subnet_public_cidr}}"
+          destination_port_range: 5432
+          protocol: "Tcp"
+          access: "Allow"
+          priority: "200"
+      state: present
+
+  - name: Create {{subnet_public_name}} subnet
+    azure_rm_subnet:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      virtual_network_name: "{{virtual_network_name}}"
+      name: "{{subnet_public_name}}"
+      address_prefix_cidr: "{{subnet_public_cidr}}"
+      state: present
+
+  - name: Create {{subnet_private_name}} subnet
+    azure_rm_subnet:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      virtual_network_name: "{{virtual_network_name}}"
+      name: "{{subnet_private_name}}"
+      address_prefix_cidr: "{{subnet_private_cidr}}"
+      security_group_name: "{{nsg_private_name}}"
+      state: present
+
