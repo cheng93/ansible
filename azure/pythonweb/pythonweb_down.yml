@@ -3,6 +3,10 @@
     hosts: all
     connection: local
     roles:
+      - role: virtual_machines
+        tags: virtual_machines
+        vars:
+          teardown: true
       - role: network
         tags: network
         vars:

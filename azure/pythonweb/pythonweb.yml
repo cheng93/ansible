@@ -11,3 +11,7 @@
         tags: network
         vars:
           teardown: false
+      - role: virtual_machines
+        tags: virtual_machines
+        vars:
+          teardown: false

@@ -1,0 +1,13 @@
+---
+  - name: Destroy {{vm_web_name}} virtual machine
+    azure_rm_virtualmachine:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      name: "{{vm_web_name}}"
+      remove_on_absent:
+        - virtual_storage
+      state: absent
+  
