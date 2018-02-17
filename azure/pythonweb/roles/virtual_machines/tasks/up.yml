@@ -25,4 +25,28 @@
           key_data: "{{vm_web_ssh}}"
       vm_size: "{{vm_web_size}}"
       state: present
-  
+
+  - name: Create {{vm_db_name}} virtual machine
+    azure_rm_virtualmachine:
+      client_id: "{{azure_client_id}}"
+      secret: "{{azure_secret}}"
+      tenant: "{{azure_tenant}}"
+      subscription_id: "{{azure_subscription}}"
+      resource_group: "{{resource_group_name}}"
+      name: "{{vm_db_name}}"
+      admin_username: "{{vm_db_username}}"
+      image:
+        offer: "{{vm_db_image_offer}}"
+        publisher: "{{vm_db_image_publisher}}"
+        sku: "{{vm_db_image_sku}}"
+        version: "{{vm_db_image_version}}"
+      location: "{{vm_db_location}}"
+      managed_disk_type: "Standard_LRS"
+      network_interface_names: "{{nic_db_name}}"
+      ssh_password_enabled: False
+      ssh_public_keys:
+        - path: "/home/{{vm_db_username}}/.ssh/authorized_keys"
+          key_data: "{{vm_db_ssh}}"
+      vm_size: "{{vm_db_size}}"
+      state: present
+    register: vm_db

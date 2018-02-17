@@ -1,13 +1,36 @@
 ---
-  - name: Destroy {{vm_web_name}} virtual machine
-    azure_rm_virtualmachine:
+  - name: Getting {{resource_group_name}} resource group facts
+    azure_rm_resourcegroup_facts:
       client_id: "{{azure_client_id}}"
       secret: "{{azure_secret}}"
       tenant: "{{azure_tenant}}"
       subscription_id: "{{azure_subscription}}"
-      resource_group: "{{resource_group_name}}"
-      name: "{{vm_web_name}}"
-      remove_on_absent:
-        - virtual_storage
-      state: absent
+      name: "{{resource_group_name}}"
+    register: resource_group
+
+  - block:
+    - name: Destroy {{vm_web_name}} virtual machine
+      azure_rm_virtualmachine:
+        client_id: "{{azure_client_id}}"
+        secret: "{{azure_secret}}"
+        tenant: "{{azure_tenant}}"
+        subscription_id: "{{azure_subscription}}"
+        resource_group: "{{resource_group_name}}"
+        name: "{{vm_web_name}}"
+        remove_on_absent:
+          - virtual_storage
+        state: absent
+  
+    - name: Destroy {{vm_db_name}} virtual machine
+      azure_rm_virtualmachine:
+        client_id: "{{azure_client_id}}"
+        secret: "{{azure_secret}}"
+        tenant: "{{azure_tenant}}"
+        subscription_id: "{{azure_subscription}}"
+        resource_group: "{{resource_group_name}}"
+        name: "{{vm_db_name}}"
+        remove_on_absent:
+          - virtual_storage
+        state: absent
+    when: resource_group.ansible_facts.azure_resourcegroups|length > 0
   
