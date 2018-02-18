@@ -1,0 +1,18 @@
+---
+web_user: "{{vault_web_user}}"
+web_host: "{{vault_web_host}}"
+
+db_user: "{{vault_web_user}}"
+db_host: "{{vault_db_host}}"
+
+db_dvdrental: "dvdrental"
+db_dvdrental_admin: "{{vault_db_dvdrental_admin}}"
+db_dvdrental_admin_password: "{{vault_db_dvdrental_admin_password}}"
+db_dvdrental_user: "{{vault_db_dvdrental_user}}"
+db_dvdrental_user_password: "{{vault_db_dvdrental_user_password}}"
+
+db_fof: "fof"
+db_fof_admin: "{{vault_db_fof_admin}}"
+db_fof_admin_password: "{{vault_db_fof_admin_password}}"
+db_fof_user: "{{vault_db_fof_user}}"
+db_fof_user_password: "{{vault_db_fof_user_password}}"

@@ -1,0 +1,33 @@
+---
+  - name: "Ensure databases user exists"
+    postgresql_user:
+      name: "{{item.user}}"
+      password: "{{item.password}}"
+      encrypted: true
+      state: present
+    with_items: "{{users}}"
+    no_log: true
+    become: true
+    become_user: "{{user}}"
+
+  - name: "Ensure databases exists"
+    postgresql_db:
+      name: "{{item.name}}"
+      owner: "{{item.owner}}"
+      state: present
+    with_items: "{{databases}}"
+    become: true
+    become_user: "{{user}}"
+
+  # - name: "Manage user priviledges"
+  #   postgresql_privs:
+  #     database: "postgres"
+  #     objs: "{{item.database}}"
+  #     roles: "{{item.roles}}"
+  #     type: "database"
+  #     privs: "{{item.privs}}"
+  #     grant_option: "{{item.grant}}"
+  #     state: present
+  #   with_items: "{{privs}}"
+  #   become: true
+  #   become_user: "{{user}}"

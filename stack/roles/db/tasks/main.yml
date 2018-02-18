@@ -1,0 +1,4 @@
+---
+  - include_tasks: install.yml
+  - include_tasks: initialize.yml
+  - include_tasks: database.yml

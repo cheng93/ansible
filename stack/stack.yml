@@ -1,0 +1,11 @@
+---
+  - name: Provision db server
+    hosts: db
+    roles:
+      - role: common
+      - role: db
+
+  - name: Provision web server
+    hosts: web
+    roles:
+      - role: common

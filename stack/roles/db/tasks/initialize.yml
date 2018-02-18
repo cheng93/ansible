@@ -1,0 +1,31 @@
+---
+  - name: Check if PostgreSQL database is initialized.
+    stat:
+      path: "/var/lib/pgsql/{{major}}/data/PG_VERSION"
+    register: pg_version
+    become: true
+
+  - name: Initialize database
+    command: "/usr/pgsql-{{major}}/bin/postgresql-{{major}}-setup initdb"
+    when: not pg_version.stat.exists
+    become: true
+
+  - name: Configure authentication
+    template:
+      src: "pg_hba.conf.j2"
+      dest: "/var/lib/pgsql/{{major}}/data/pg_hba.conf"
+    when: hba
+    become: true
+    notify: "restart postgresql"
+
+  - name: Enable database
+    systemd:
+      name: "postgresql-{{major}}"
+      enabled: "yes"
+    become: true
+
+  - name: Start database
+    systemd:
+      name: "postgresql-{{major}}"
+      state: "started"
+    become: true

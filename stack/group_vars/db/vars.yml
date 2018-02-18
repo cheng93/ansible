@@ -1,0 +1,4 @@
+---
+  ansible_host: "{{db_host}}"
+  ansible_user: "{{db_user}}"
+  ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q {{web_user}}@{{web_host}}'"

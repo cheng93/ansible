@@ -1,0 +1,13 @@
+---
+  - name: Install Postgresql rpm
+    yum:
+      name: "{{rpm}}"
+      state: present
+    become: true
+
+  - name: Install yum packages
+    yum:
+      name: "{{item}}"
+      state: latest
+    with_items: "{{packages}}"
+    become: true

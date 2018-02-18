@@ -1,0 +1,6 @@
+---
+  - name: restart postgresql
+    service: 
+      name: "postgresql-{{major}}"
+      state: "restarted"
+    become: true
