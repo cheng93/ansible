@@ -1,0 +1,30 @@
+---
+  - name: Enable docker
+    systemd:
+      name: "docker"
+      enabled: "yes"
+    become: true
+
+  - name: Start docker
+    systemd:
+      name: "docker"
+      state: "started"
+    become: true
+
+  - name: Pull latest docker image
+    docker_image:
+      name: "{{docker_image}}"
+      tag: "{{docker_tag}}"
+      state: present
+      nocache: true
+      force: true
+    become: true
+
+  - name: Start docker image
+    docker_container:
+      name: "{{docker_container}}"
+      image: "{{docker_image}}:{{docker_tag}}"
+      ports: "{{docker_ports}}"
+      env: "{{docker_env}}"
+      state: started
+    become: true

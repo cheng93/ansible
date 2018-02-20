@@ -1,0 +1,17 @@
+---
+  - name: Add docker repo
+    yum_repository:
+      name: "{{repo.docker.name}}"
+      description: "{{repo.docker.description}}"
+      baseurl: "{{repo.docker.baseurl}}"
+      gpgkey: "{{repo.docker.gpg}}"
+      gpgcheck: "{{repo.docker.gpgcheck}}"
+      state: present
+    become: true
+
+  - name: Install yum packages
+    yum:
+      name: "{{item}}"
+      state: latest
+    with_items: "{{packages}}"
+    become: true
