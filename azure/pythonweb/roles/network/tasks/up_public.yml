@@ -33,6 +33,12 @@
           protocol: "Tcp"
           access: "Allow"
           priority: "200"
+        - name: "{{nsg_public_rule_https_name}}"
+          direction: "Inbound"
+          destination_port_range: 443
+          protocol: "Tcp"
+          access: "Allow"
+          priority: "300"
       state: present
   
   - name: Create {{ip_name}} public ip
