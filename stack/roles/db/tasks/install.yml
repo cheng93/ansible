@@ -8,6 +8,6 @@
   - name: Install yum packages
     yum:
       name: "{{item}}"
-      state: latest
+      state: present
     with_items: "{{packages}}"
     become: true

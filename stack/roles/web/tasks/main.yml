@@ -1,3 +1,5 @@
 ---
   - include_tasks: install.yml
+  - include_tasks: nginx.yml
+  - include_tasks: certificate.yml
   - include_tasks: docker.yml

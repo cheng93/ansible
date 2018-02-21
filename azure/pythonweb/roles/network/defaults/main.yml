@@ -11,6 +11,7 @@ nsg_public_name: "NSG-Public-{{resource_group_name}}"
 nsg_public_location: "{{location}}"
 nsg_public_rule_ssh_name: "Allow-SSH"
 nsg_public_rule_http_name: "Allow-Http"
+nsg_public_rule_https_name: "Allow-Https"
 
 subnet_public_name: "Subnet-Public-{{resource_group_name}}"
 subnet_public_cidr: "10.0.0.0/24"

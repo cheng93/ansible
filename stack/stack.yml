@@ -2,13 +2,13 @@
   - name: Provision db server
     hosts: db
     roles:
-      - role: common
+      #- role: common
       - role: db
     tags: db
 
   - name: Provision web server
     hosts: web
     roles:
-      - role: common
+      #- role: common
       - role: web
     tags: web

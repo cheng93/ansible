@@ -1,0 +1,23 @@
+---
+  - name: Check if certificate exists
+    stat:
+      path: "{{certificate_path}}/live/{{item.1}}{{item.0.domain}}"
+    with_subelements:
+      - "{{domains}}"
+      - subdomains
+    register: certificates
+    become: true
+  
+  - name: Generate certificates
+    shell: "certbot certonly --nginx --noninteractive --agree-tos --email {{certificate_email}} -d {{item.item.1}}{{item.item.0.domain}}"
+    with_items: "{{certificates.results}}"
+    when: not item.stat.exists
+    become: true  
+
+  - name: Copy site with ssl conf template
+    template:
+      src: "site_ssl.conf.j2"
+      dest: "/etc/nginx/conf.d/{{item.domain}}.conf"
+    with_items: "{{domains}}"
+    notify: restart nginx
+    become: true

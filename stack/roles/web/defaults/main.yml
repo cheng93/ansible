@@ -1,21 +1,30 @@
 ---
 repo:
-  docker:
+  - docker:
     name: "docker-ce"
     description: "Docker"
     baseurl: "https://download.docker.com/linux/centos/$releasever/$basearch/stable/"
     gpg: "https://download.docker.com/linux/centos/gpg"
     gpgcheck: true
-
+  - epel:
+    name: "epel-7"
+    description: "EPEL"
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    gpg: "https://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    gpgcheck: true
 
 packages:
   - "docker-ce"
   - "python-docker-py"
+  - "certbot-nginx"
+  - "nginx"
 
 docker_tag: "latest"
 docker_container: "app"
 docker_ports:
-  - "80:80"
+  - "8080:80"
 docker_env:
   FOF_CONNECTION_STRING: "postgresql://{{db_fof_user}}:{{db_fof_user_password}}@{{db_host}}:5432/{{db_fof}}"
   DVDRENTAL_CONNECTION_STRING: "postgresql://{{db_dvdrental_user}}:{{db_dvdrental_user_password}}@{{db_host}}:5432/{{db_dvdrental}}"
+
+certificate_path: "/etc/letsencrypt/"
