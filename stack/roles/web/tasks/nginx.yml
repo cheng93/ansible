@@ -6,9 +6,59 @@
     notify: restart nginx
     become: true
 
+  - name: Check if certificate exists
+    stat:
+      path: "{{certificate_path}}/live/{{item.1}}{{item.0.domain}}"
+    with_subelements:
+      - "{{domains}}"
+      - subdomains
+    register: certificates
+    become: true  
+
+  - name: Check if site conf exists
+    stat:
+      path: "/etc/nginx/conf.d/{{item.domain}}.conf"
+    with_items: "{{domains}}"
+    register: nginx_conf
+    become: true
+
+  - name: Register missing confs
+    set_fact:
+      domain: "{{item.item.domain}}"
+    with_items: "{{nginx_conf.results}}"
+    when: not item.stat.exists
+    become: true
+    register: missing_confs
+
+  - name: Register missing certificates
+    set_fact:
+      domain: "{{item.item.0.domain}}"
+    with_items: "{{certificates.results}}"
+    when: not item.stat.exists
+    become: true
+    register: missing_certificates
+
+  - set_fact:
+      missing_domains: "{{missing_confs.results | selectattr('ansible_facts', 'defined') | map(attribute='ansible_facts.domain') | list }} + {{missing_certificates.results | selectattr('ansible_facts', 'defined') | map(attribute='ansible_facts.domain') | list}}"
+
   - name: Copy site conf template
     template:
       src: "site.conf.j2"
+      dest: "/etc/nginx/conf.d/{{item.domain}}.conf"
+    with_items: "{{domains}}"
+    when: item.domain in missing_domains
+    notify: restart nginx
+    become: true
+
+  - name: Generate certificates
+    shell: "certbot certonly --nginx --noninteractive --agree-tos --email {{certificate_email}} -d {{item.item.1}}{{item.item.0.domain}}"
+    with_items: "{{certificates.results}}"
+    when: not item.stat.exists
+    become: true  
+
+  - name: Copy site with ssl conf template
+    template:
+      src: "site_ssl.conf.j2"
       dest: "/etc/nginx/conf.d/{{item.domain}}.conf"
     with_items: "{{domains}}"
     notify: restart nginx
@@ -24,4 +74,7 @@
     systemd:
       name: "nginx"
       state: "started"
+    become: true
+
+  - command: setsebool -P httpd_can_network_connect 1
     become: true

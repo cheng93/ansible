@@ -15,8 +15,8 @@ server {
 server {
   listen 443 ssl;
 
-  ssl_certificate {{certificate_path}}/live/{{ subdomain }}{{ item.domain }}/fullchain.pem;
-  ssl_certificate_key {{certificate_path}}/live/{{ subdomain }}{{ item.domain }}/privkey.pem;
+  ssl_certificate {{certificate_path}}live/{{ subdomain }}{{ item.domain }}/fullchain.pem;
+  ssl_certificate_key {{certificate_path}}live/{{ subdomain }}{{ item.domain }}/privkey.pem;
 
   server_name {{ subdomain }}{{ item.domain }};
 
