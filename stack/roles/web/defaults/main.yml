@@ -20,6 +20,7 @@ packages:
   - "nginx"
 
 docker_tag: "latest"
+#docker_tag: "0.1.1"
 docker_container: "app"
 docker_ports:
   - "8080:80"
