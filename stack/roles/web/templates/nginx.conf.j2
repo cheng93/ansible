@@ -17,6 +17,11 @@ http {
 
     access_log  /var/log/nginx/access.log  main;
 
+    gzip            on;
+    gzip_types      text/plain application/xml text/css application/javascript image/svg+xml image/jpeg;
+    gzip_proxied    no-cache no-store private expired;
+    gzip_min_length 1000;
+
     sendfile            on;
     tcp_nopush          on;
     tcp_nodelay         on;
