@@ -17,7 +17,7 @@ db_fof_admin_password: "{{vault_db_fof_admin_password}}"
 db_fof_user: "{{vault_db_fof_user}}"
 db_fof_user_password: "{{vault_db_fof_user_password}}"
 
-docker_image: "{{vault_docker_image}}"
+docker_images: "{{vault_docker_images}}"
 
 domains: "{{vault_domains}}"
 
