@@ -31,5 +31,9 @@ docker_infos:
     container: "skyrim-tool"
     ports: "5000:8080"
     env: {}
+  - tag: "dev"
+    container: "ffviii"
+    ports: "6000:80"
+    env: {}
 
 certificate_path: "/etc/letsencrypt/"
