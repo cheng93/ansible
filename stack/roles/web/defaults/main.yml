@@ -27,7 +27,7 @@ docker_infos:
     env:
       FOF_CONNECTION_STRING: "postgresql://{{db_fof_user}}:{{db_fof_user_password}}@{{db_host}}:5432/{{db_fof}}"
       DVDRENTAL_CONNECTION_STRING: "postgresql://{{db_dvdrental_user}}:{{db_dvdrental_user_password}}@{{db_host}}:5432/{{db_dvdrental}}"
-  - tag: "dev"
+  - tag: "0.1.0"
     container: "skyrim-tool"
     ports: "5000:8080"
     env: {}
