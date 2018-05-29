@@ -21,17 +21,15 @@ packages:
 
 #docker_tag: "latest"
 docker_infos:
-  - tag: "0.2.1"
-    container: "app"
+  - tag: "0.1.0"
+    container: "home"
     ports: "8080:80"
-    env:
-      FOF_CONNECTION_STRING: "postgresql://{{db_fof_user}}:{{db_fof_user_password}}@{{db_host}}:5432/{{db_fof}}"
-      DVDRENTAL_CONNECTION_STRING: "postgresql://{{db_dvdrental_user}}:{{db_dvdrental_user_password}}@{{db_host}}:5432/{{db_dvdrental}}"
+    env: {}
   - tag: "0.1.0"
     container: "skyrim-tool"
     ports: "5000:8080"
     env: {}
-  - tag: "dev"
+  - tag: "0.1.0"
     container: "ffviii"
     ports: "6000:80"
     env: {}
