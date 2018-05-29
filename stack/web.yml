@@ -1,0 +1,7 @@
+---
+  - name: Provision web server
+    hosts: web
+    roles:
+      #- role: common
+      - role: web
+    tags: web

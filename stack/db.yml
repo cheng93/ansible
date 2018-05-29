@@ -1,0 +1,7 @@
+---
+  - name: Provision db server
+    hosts: db
+    roles:
+      #- role: common
+      - role: db
+    tags: db
