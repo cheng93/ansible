@@ -25,7 +25,7 @@ docker_infos:
     container: "home"
     ports: "8080:80"
     env: {}
-  - tag: "0.1.0"
+  - tag: "0.2.0"
     container: "skyrim-tool"
     ports: "5000:8080"
     env: {}
