@@ -1,0 +1,25 @@
+---
+  - name: Download filebeat certificate
+    get_url:
+      url: "https://raw.githubusercontent.com/logzio/public-certificates/master/COMODORSADomainValidationSecureServerCA.crt"
+      dest: "/etc/pki/tls/certs"
+    become: true
+
+  - name: Filebeat configuration
+    template:
+      src: "filebeat.j2"
+      dest: "/etc/filebeat/filebeat.yml"
+    notify: restart filebeat
+    become: true
+
+  - name: Enable filebeat
+    systemd:
+      name: "filebeat"
+      enabled: true
+    become: true
+
+  - name: Start filebeat
+    systemd:
+      name: "filebeat"
+      state: "started"
+    become: true

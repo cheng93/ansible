@@ -12,12 +12,19 @@ repo:
     baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
     gpg: "https://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
     gpgcheck: true
+  - elastic:
+    name: "elastic"
+    description: "elastic"
+    baseurl: https://artifacts.elastic.co/packages/6.x/yum
+    gpg: "https://packages.elastic.co/GPG-KEY-elasticsearch"
+    gpgcheck: true
 
 packages:
   - "docker-ce"
   - "python-docker-py"
   - "certbot-nginx"
   - "nginx"
+  - "filebeat"
 
 #docker_tag: "latest"
 docker_infos:

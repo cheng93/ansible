@@ -22,3 +22,5 @@ docker_images: "{{vault_docker_images}}"
 domains: "{{vault_domains}}"
 
 certificate_email: "{{vault_certificate_email}}"
+
+filebeat_token: "{{vault_filebeat_token}}"
