@@ -1,6 +1,6 @@
 server {
   listen 80;
-  server_name{% for subdomain in item.subdomains %} {{ subdomain }}{{ item.domain }}{% endfor %};
+  server_name{% for subdomain in item[1].prefix %} {{ subdomain }}{{ item[0].domain }}{% endfor %};
 
   location /.well-known/acme-challenge/ {
     root {{ certificate_path }};
@@ -11,14 +11,13 @@ server {
   }
 }
 
-{% for subdomain in item.subdomains %}
 server {
   listen 443 ssl;
 
-  ssl_certificate {{certificate_path}}live/{{ subdomain }}{{ item.domain }}/fullchain.pem;
-  ssl_certificate_key {{certificate_path}}live/{{ subdomain }}{{ item.domain }}/privkey.pem;
+  ssl_certificate {{certificate_path}}live/{{ item[1].name }}.{{ item[0].domain }}/fullchain.pem;
+  ssl_certificate_key {{certificate_path}}live/{{ item[1].name }}.{{ item[0].domain }}/privkey.pem;
 
-  server_name {{ subdomain }}{{ item.domain }};
+  server_name{% for subdomain in item[1].prefix %} {{ subdomain }}{{ item[0].domain }}{% endfor %};
 
   location / {
     proxy_pass_header Authorization;
@@ -49,4 +48,3 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
 }
-{% endfor %}
