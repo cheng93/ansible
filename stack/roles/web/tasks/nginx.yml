@@ -46,7 +46,7 @@
 
   - name: Copy site conf template
     template:
-      src: "site.conf.j2"
+      src: "site.{{item.1.name}}.conf.j2"
       dest: "/etc/nginx/conf.d/{{item.1.name}}.{{item.0.domain}}.conf"
     with_subelements:
       - "{{domains}}"
@@ -72,7 +72,7 @@
 
   - name: Copy site with ssl conf template
     template:
-      src: "site_ssl.conf.j2"
+      src: "site_ssl.{{item.1.name}}.conf.j2"
       dest: "/etc/nginx/conf.d/{{item.1.name}}.{{item.0.domain}}.conf"
     with_subelements:
       - "{{domains}}"
