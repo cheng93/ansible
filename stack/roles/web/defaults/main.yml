@@ -28,7 +28,7 @@ packages:
 
 #docker_tag: "latest"
 docker_infos:
-  - tag: "0.2.0"
+  - tag: "0.3.0"
     container: "home"
     ports: "8080:80"
     env: {}
