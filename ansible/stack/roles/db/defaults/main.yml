@@ -1,6 +1,6 @@
 ---
 rpm: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm"
-version: "10.2"
+version: "10.5"
 major: "{{version.split('.')[0]}}"
 user: "postgres"
 
