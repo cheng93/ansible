@@ -1,9 +1,0 @@
----
-- name: teardown the jenkins stack
-  hosts: all
-  connection: local
-  roles:
-    - role: ec2_teardown
-      tags: ec2
-    - role: vpc_teardown
-      tags: vpc

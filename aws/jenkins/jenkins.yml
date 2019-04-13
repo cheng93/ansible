@@ -1,9 +1,0 @@
----
-- name: create the jenkins stack
-  hosts: all
-  connection: local
-  roles:
-    - role: vpc
-      tags: vpc
-    - role: ec2
-      tags: ec2
