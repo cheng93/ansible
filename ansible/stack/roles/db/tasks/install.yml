@@ -7,7 +7,6 @@
 
   - name: Install yum packages
     yum:
-      name: "{{item}}"
+      name: "{{packages}}"
       state: present
-    with_items: "{{packages}}"
     become: true
