@@ -16,8 +16,7 @@
       name: "{{item.1}}"
       tag: "{{docker_infos[item.0].tag}}"
       state: present
-      nocache: true
-      force: true
+      force_source: true
     with_indexed_items:
       - "{{docker_images}}"
     become: true
