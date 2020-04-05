@@ -15,15 +15,36 @@ databases:
 hba:
   - { type: "local", database: "all", user: "{{user}}", auth_method: "peer"}
   - { type: "host", database: "{{db_blog}}", user: "{{db_blog_admin}}", address: "127.0.0.1/32", auth_method: "md5" }
-  - { type: "host", database: "{{db_blog}}", user: "{{db_blog_user}}", address: "127.0.0.1/32", auth_method: "md5" }
+  - { type: "host", database: "{{db_blog}}", user: "{{db_blog_user}}", address: "10.0.0.4/32", auth_method: "md5" }
   - { type: "host", database: "{{db_fof}}", user: "{{db_fof_admin}}", address: "127.0.0.1/32", auth_method: "md5" }
-  - { type: "host", database: "{{db_fof}}", user: "{{db_fof_user}}", address: "127.0.0.1/32", auth_method: "md5" }
+  - { type: "host", database: "{{db_fof}}", user: "{{db_fof_user}}", address: "10.0.0.4/32", auth_method: "md5" }
 
 users:
-  - { user: "{{db_blog_admin}}", password: "{{db_blog_admin_password}}" }
-  - { user: "{{db_blog_user}}", password: "{{db_blog_user_password}}" }
-  - { user: "{{db_fof_admin}}", password: "{{db_fof_admin_password}}" }
-  - { user: "{{db_fof_user}}", password: "{{db_fof_user_password}}" }
+  - { user: "{{db_blog_admin}}", password: "{{db_blog_admin_password}}", database: "{{db_blog}}", groups: [] }
+  - { user: "{{db_blog_user}}", password: "{{db_blog_user_password}}", database: "{{db_blog}}", groups: ["readwrite"] }
+  - { user: "{{db_fof_admin}}", password: "{{db_fof_admin_password}}", database: "{{db_fof}}", groups: [] }
+  - { user: "{{db_fof_user}}", password: "{{db_fof_user_password}}", database: "{{db_fof}}", groups: ["readwrite"] }
+
+dbroles:
+  - name: "readonly"
+    objects:
+      - type: "schema"
+        privs: "USAGE"
+        obj: "public"
+      - type: "table"
+        privs: "SELECT"
+        obj: "ALL_IN_SCHEMA"
+  - name: "readwrite"
+    groups:
+      - "readonly"
+    objects:
+      - type: "table"
+        privs: "INSERT,UPDATE,DELETE"
+        obj: "ALL_IN_SCHEMA"
+      - type: "sequence"
+        privs: "USAGE"
+        obj: "ALL_IN_SCHEMA"
+
 
 privs:
   - { database: "{{db_blog}}", roles: "{{db_blog_user}}", grant: "no", privs: "SELECT,INSERT,UPDATE,DELETE,CONNECT"}

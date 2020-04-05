@@ -10,11 +10,18 @@
     when: not pg_version.stat.exists
     become: true
 
+  - name: Configure postgresql
+    template:
+      src: "postgresql.conf.j2"
+      dest: "/var/lib/pgsql/{{major}}/data/postgresql.conf"
+    become: true
+    notify: "restart postgresql"
+
   - name: Configure authentication
     template:
       src: "pg_hba.conf.j2"
       dest: "/var/lib/pgsql/{{major}}/data/pg_hba.conf"
-    when: hba
+    when: hba|bool
     become: true
     notify: "restart postgresql"
 

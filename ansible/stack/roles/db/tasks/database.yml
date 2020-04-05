@@ -1,33 +1,88 @@
 ---
+  - name: "Ensure databases exists"
+    postgresql_db:
+      name: "{{item.name}}"
+      state: present
+    with_items: "{{databases}}"
+    become: true
+    become_user: "{{user}}"
+
+  - name: "Revoke all schema priviledges"
+    postgresql_privs:
+      database: "{{item.name}}"
+      state: absent
+      privs: "ALL"
+      type: "schema"
+      obj: "public"
+      role: "public"
+    loop: "{{databases|flatten(levels=1)}}"
+    become: true
+    become_user: "{{user}}"
+
+  - name: "Create roles"
+    postgresql_user:
+      name: "{{item[1].name}}"
+      db: "{{item[0].name}}"
+      role_attr_flags: NOLOGIN
+      state: present
+    loop: "{{databases|product(dbroles)|list}}" 
+    become: true
+    become_user: "{{user}}"
+
+  - name: "Grant roles permission"
+    postgresql_privs:
+      database: "{{item[0].name}}"
+      state: present
+      privs: "{{item[1][1].privs}}"
+      type: "{{item[1][1].type}}"
+      obj: "{{item[1][1].obj}}"
+      role: "{{item[1][0].name}}"
+    loop: "{{databases|product(dbroles|subelements('objects'))|list}}"
+    become: true
+    become_user: "{{user}}"
+
+  - name: "Grant role subgroups"
+    postgresql_membership:
+      state: present
+      groups: "{{item.groups}}"
+      target_roles: "{{item.name}}"
+    loop: "{{dbroles|flatten(levels=1)}}"
+    when: item.groups is defined
+    become: true
+    become_user: "{{user}}"
+
   - name: "Ensure databases user exists"
     postgresql_user:
       name: "{{item.user}}"
       password: "{{item.password}}"
+      db: "{{item.database}}"
+      groups: "{{item.groups}}"
       encrypted: true
       state: present
     with_items: "{{users}}"
     no_log: true
     become: true
     become_user: "{{user}}"
-
-  - name: "Ensure databases exists"
-    postgresql_db:
-      name: "{{item.name}}"
-      owner: "{{item.owner}}"
-      state: present
+  
+  - name: "Ensure databases owner"
+    postgresql_owner:
+      new_owner: "{{item.owner}}"
+      obj_name: "{{item.name}}"
+      obj_type: database
     with_items: "{{databases}}"
     become: true
     become_user: "{{user}}"
 
-  # - name: "Manage user priviledges"
-  #   postgresql_privs:
-  #     database: "postgres"
-  #     objs: "{{item.database}}"
-  #     roles: "{{item.roles}}"
-  #     type: "database"
-  #     privs: "{{item.privs}}"
-  #     grant_option: "{{item.grant}}"
-  #     state: present
-  #   with_items: "{{privs}}"
-  #   become: true
-  #   become_user: "{{user}}"
+  - name: "Grant default permission"
+    postgresql_privs:
+      database: "{{item[0].name}}"
+      state: present
+      type: default_privs
+      target_roles: "{{item[0].owner}}"
+      privs: "{{item[1][1].privs}}"
+      obj: "{{item[1][1].type}}s"
+      roles: "{{item[1][0].name}}"
+    loop: "{{databases|product(dbroles|subelements('objects'))|list}}"
+    when: item[1][1].type != "schema"
+    become: true
+    become_user: "{{user}}"
