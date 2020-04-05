@@ -40,5 +40,10 @@ docker_infos:
     container: "ffviii"
     ports: "6000:80"
     env: {}
+  - tag: "test"
+    container: "blog"
+    ports: "7000:8080"
+    env:
+      Blog_ConnectionStrings__BlogDbContext: "Host={{db_host}};Database={{db_blog}};Username={{db_blog_user}};Password={{db_blog_user_password}}"
 
 certificate_path: "/etc/letsencrypt/"
