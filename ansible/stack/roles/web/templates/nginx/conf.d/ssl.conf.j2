@@ -1,0 +1,8 @@
+listen 443 ssl;
+
+ssl_certificate {{certificate_path}}live/{{ item[1] }}.{{ item[0].domain }}/fullchain.pem;
+ssl_certificate_key {{certificate_path}}live/{{ item[1] }}.{{ item[0].domain }}/privkey.pem;
+
+if ($scheme != "https") {
+    return 301 https://$host$request_uri;
+}

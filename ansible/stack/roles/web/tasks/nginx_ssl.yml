@@ -1,0 +1,35 @@
+---
+  - name: Check if certificate exists
+    stat:
+      path: "{{certificate_path}}/live/{{item[1]}}.{{item[0].domain}}"
+    loop: "{{domains|subelements('subdomains')}}"
+    register: certificates
+    become: true
+
+  - set_fact:
+      missing_certificates: []
+
+  - name: Register missing certificates
+    set_fact:
+      missing_certificates: "{{missing_certificates + [item.item.1 + '.' + item.item.0.domain]}}"
+    loop: "{{certificates.results|flatten(levels=1)}}"
+    when: not item.stat.exists
+
+  - name: Generate certificates
+    shell: "certbot certonly --nginx --noninteractive --agree-tos --cert-name {{item}} --preferred-challenges http --email {{certificate_email}} -d {{item}}"
+    loop: "{{missing_certificates|flatten(levels=1)}}"
+    become: true 
+
+  - name: Ensure ssl config directory exists
+    file:
+      path: /etc/nginx/conf.d/ssl
+      state: directory
+    become: true
+
+  - name: Ensure ssl config exists
+    template:
+      src: nginx/conf.d/ssl.conf.j2
+      dest: /etc/nginx/conf.d/ssl/{{item.1}}_ssl.conf
+    loop: "{{domains|subelements('subdomains')}}"
+    notify: restart nginx
+    become: true

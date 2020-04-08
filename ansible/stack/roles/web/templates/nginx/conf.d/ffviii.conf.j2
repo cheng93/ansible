@@ -6,18 +6,7 @@ server {
     root {{ certificate_path }};
   }
 
-  location / {
-      return 301 https://$host$request_uri;
-  }
-}
-
-server {
-  listen 443 ssl;
-
-  ssl_certificate {{certificate_path}}live/{{ item[1] }}.{{ item[0].domain }}/fullchain.pem;
-  ssl_certificate_key {{certificate_path}}live/{{ item[1] }}.{{ item[0].domain }}/privkey.pem;
-
-  server_name {{ item[1] }}.{{ item[0].domain }};
+  include /etc/nginx/conf.d/ssl/ffviii_ssl[.]conf;
   
   location / {
     proxy_pass_header Authorization;

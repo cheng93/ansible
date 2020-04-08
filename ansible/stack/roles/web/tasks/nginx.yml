@@ -1,82 +1,16 @@
 ---
   - name: Copy nginx conf template
     template:
-      src: "nginx.conf.j2"
+      src: "nginx/nginx.conf.j2"
       dest: "/etc/nginx/nginx.conf"
     notify: restart nginx
     become: true
 
-  - name: Check if certificate exists
-    stat:
-      path: "{{certificate_path}}/live/{{item.1}}.{{item.0.domain}}"
-    with_subelements:
-      - "{{domains}}"
-      - subdomains
-    register: certificates
-    become: true  
-
-  - name: Check if site conf exists
-    stat:
-      path: "/etc/nginx/conf.d/{{item.1}}.{{item.0.domain}}.conf"
-    with_subelements: 
-      - "{{domains}}"
-      - subdomains
-    register: nginx_conf
-    become: true
-
-  - name: Register missing confs
-    set_fact:
-      site: "{{item.item.1}}.{{item.item.0.domain}}"
-    with_items: "{{nginx_conf.results}}"
-    when: not item.stat.exists
-    become: true
-    register: missing_confs
-
-  - name: Register missing certificates
-    set_fact:
-      site: "{{item.item.1}}.{{item.item.0.domain}}"
-    with_items: "{{certificates.results}}"
-    when: not item.stat.exists
-    become: true
-    register: missing_certificates
-
-  - set_fact:
-      missing_domains: "{{missing_confs.results | selectattr('ansible_facts', 'defined') | map(attribute='ansible_facts.site') | list }} + {{missing_certificates.results | selectattr('ansible_facts', 'defined') | map(attribute='ansible_facts.site') | list}}"
-      missing_certificate_sites: "{{missing_certificates.results | selectattr('ansible_facts', 'defined') | map(attribute='ansible_facts.site') | list}}"
-
-  - name: Copy site conf template
+  - name: Ensure site conf exists
     template:
-      src: "site.{{item.1}}.conf.j2"
-      dest: "/etc/nginx/conf.d/{{item.1}}.{{item.0.domain}}.conf"
-    with_subelements:
-      - "{{domains}}"
-      - subdomains
-    when: (item.1 + '.' + item.0.domain) in missing_domains
-    notify: restart nginx
-    become: true
-
-  - set_fact:
-      certificates_to_register: []
-
-  - set_fact:
-      certificates_to_register: "{{certificates_to_register + [{'cert_name': item.1 + '.' + item.0.domain}]}}"
-    with_subelements: 
-      - "{{domains}}"
-      - subdomains
-    when: (item.1 + '.' + item.0.domain) in missing_certificate_sites
-
-  - name: Generate certificates
-    shell: "certbot certonly --nginx --noninteractive --agree-tos --cert-name {{item.cert_name}} --preferred-challenges http --email {{certificate_email}} -d {{item.cert_name}}"
-    with_items: "{{certificates_to_register}}"
-    become: true  
-
-  - name: Copy site with ssl conf template
-    template:
-      src: "site_ssl.{{item.1}}.conf.j2"
-      dest: "/etc/nginx/conf.d/{{item.1}}.{{item.0.domain}}.conf"
-    with_subelements:
-      - "{{domains}}"
-      - subdomains
+      src: nginx/conf.d/{{item.1}}.conf.j2
+      dest: /etc/nginx/conf.d/{{item.1}}.conf
+    loop: "{{domains|subelements('subdomains')}}"
     notify: restart nginx
     become: true
 
