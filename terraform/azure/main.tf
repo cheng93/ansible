@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version         = "=2.2.0"
+  version         = "=2.7.0"
   subscription_id = var.subscription_id
   features {
   }
@@ -29,3 +29,10 @@ module "virtual_machines" {
   vm_username             = var.vm_username
 }
 
+module "storage" {
+  source = "./modules/storage"
+
+  subscription_id         = var.subscription_id
+  resource_group_name     = azurerm_resource_group.resource_group.name
+  resource_group_location = azurerm_resource_group.resource_group.location
+}
