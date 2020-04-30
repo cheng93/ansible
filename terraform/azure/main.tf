@@ -36,12 +36,3 @@ module "storage" {
   resource_group_name     = azurerm_resource_group.resource_group.name
   resource_group_location = azurerm_resource_group.resource_group.location
 }
-
-module "cdn" {
-  source = "./modules/cdn"
-
-  subscription_id         = var.subscription_id
-  resource_group_name     = azurerm_resource_group.resource_group.name
-  resource_group_location = azurerm_resource_group.resource_group.location
-  storage_blog_host_name  = module.storage.storage_blog_host_name
-}
