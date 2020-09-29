@@ -26,3 +26,4 @@ certificate_email: "{{vault_certificate_email}}"
 filebeat_token: "{{vault_filebeat_token}}"
 
 blog_endpoint: "{{vault_blog_endpoint}}"
+plex_endpoint: "{{vault_plex_endpoint}}"
